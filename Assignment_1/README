@@ -1,0 +1,11 @@
+tourki@tourki-ThinkPad-T440s:~/git/LinuxRunners/Assignment_1$ gcc Femto_shell.c -o Femto_shell.out
+tourki@tourki-ThinkPad-T440s:~/git/LinuxRunners/Assignment_1$ ./Femto_shell.out 
+Ana Gahez ya Basha > Hello
+Yout said: Hello
+Ana Gahez ya Basha > Can you hear me?
+Yout said: Can you hear me?
+Ana Gahez ya Basha > stop copying me
+Yout said: stop copying me
+Ana Gahez ya Basha > exit
+Yout said: exit
+Good Bye :)
