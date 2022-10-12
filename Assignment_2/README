@@ -1,0 +1,122 @@
+Assignment #3 (Femto Shell Extension #1 )
+Extend your femto shell to support the following features:
+1- Executing external commands using fork and exec
+2- Local and env variables where the env variables are passed to any child created by your shell while the local variables are not passed to the children.
+
+Important notes:
+1- Check on the return values of the system calls / library routines you will use and indent your code.
+2- Upload your code to github (يفضل جدا) or googledrive and send me a link through this form ().
+3- Please include a README file with the compilation command(s) you used and example of the output.
+4- The deadline for this assignment is Monday 10/10
+
+Note: Run the Run.sh script with to compile and run the tests
+
+Programs outputs:
+
+[31mcompiling the programs(B[m
+[31mcompiling the programs completed(B[m
+[31mtesting myecho(B[m
+hellow there, how are you doing? 
+[31mtesting mypwd(B[m
+/home/tourki/git/LinuxRunners/Assignment_2
+[31mtesting mypwd error at passing any argument(B[m
+Error: too many arguments
+[31mtesting mycp error at passing no argument(B[m
+Error: wrong number of arguments
+[31mtesting mycp error at passing few argument(B[m
+Error: wrong number of arguments
+[31mtesting mycp error at passing a source file that doesn't exist(B[m
+Error: Source not found or couldn't create the destination file
+[31mtesting mycp normal operation(B[m
+[31mCat the copyed file(B[m
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+	int Dest, Source,bufSize;
+	char buffer[255];
+	struct stat statbuf;
+
+	if (argc == 3)
+	{
+		//open the source file with read-only permissions
+		Source = open(argv[1],O_RDONLY, S_IRUSR);
+		//Fetch the source file access permissions
+		stat(argv[1], &statbuf);
+		Dest   = open(argv[2],O_WRONLY | O_CREAT, statbuf.st_mode);
+
+		//check issues with opening the source file or creating the destination
+		if (Source !=-1 && Dest != -1)
+		{
+			//Read buffer till read return 0 indicating end of file
+			while(bufSize=read(Source,buffer,255))
+				write(Dest,buffer,bufSize);
+		}
+		else
+		{
+			printf("Error: Source not found or couldn't create the destination file\n");
+		}
+		close(Source);
+		close(Dest);
+	}
+	else
+	{
+		printf("Error: wrong number of arguments\n");
+	}
+
+	return 0;
+}
+[31mtesting mymv error at passing no argument(B[m
+Error: wrong number of arguments
+[31mtesting mymv error at passing few argument(B[m
+Error: wrong number of arguments
+[31mtesting mymv error at passing a source file that doesn't exist(B[m
+Error: Source not found or couldn't create the destination file
+[31mtesting mycp normal operation(B[m
+[31mCat the source file expecting file doesn't exist(B[m
+[31mCat the moved file(B[m
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+	int Dest, Source,bufSize;
+	char buffer[255];
+	struct stat statbuf;
+
+	if (argc == 3)
+	{
+		//open the source file with read-only permissions
+		Source = open(argv[1],O_RDONLY, S_IRUSR);
+		//Fetch the source file access permissions
+		stat(argv[1], &statbuf);
+		Dest   = open(argv[2],O_WRONLY | O_CREAT, statbuf.st_mode);
+
+		//check issues with opening the source file or creating the destination
+		if (Source !=-1 && Dest != -1)
+		{
+			//Read buffer till read return 0 indicating end of file
+			while(bufSize=read(Source,buffer,255))
+				write(Dest,buffer,bufSize);
+		}
+		else
+		{
+			printf("Error: Source not found or couldn't create the destination file\n");
+		}
+		close(Source);
+		close(Dest);
+	}
+	else
+	{
+		printf("Error: wrong number of arguments\n");
+	}
+
+	return 0;
+}
