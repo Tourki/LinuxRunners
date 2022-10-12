@@ -1,3 +1,28 @@
+Assignment #1 (Femto shell):
+Write a femto shell program in c language that echoes any command entered by the user. The shell will have only one built-in command "exit". If the user entered "exit", the shell will reply with "Good Bye" and terminate.
+
+Here is an example of the output:
+$ ./myFemtoShell
+Ana Gahez ya Basha > Hello my shell
+You said: Hello my shell
+Ana Gahez ya Basha > what can you do?
+You said: what can you do?
+Ana Gahez ya Basha > You are super
+You said: You are super
+Ana Gahez ya Basha > exit
+Good Bye :)
+$
+
+You can use any library routine (e.g. printf, strcmp, fgets, ..). The man pages will help you 😉 .
+
+Important notes:
+1- Please use a prompt message other than "Ana Gahez ya Basha" 😃 
+2- Upload your code to github (يفضل جدا) or googledrive and send me a link through this form (https://forms.gle/RDimCrJRjMyjF9zH6).
+3- Please include a README file with the compilation command(s) you used and example of the output.
+4- The deadline for this assignment is Monday 19/9
+
+
+Program output:
 tourki@tourki-ThinkPad-T440s:~/git/LinuxRunners/Assignment_1$ gcc Femto_shell.c -o Femto_shell.out
 tourki@tourki-ThinkPad-T440s:~/git/LinuxRunners/Assignment_1$ ./Femto_shell.out 
 Ana Gahez ya Basha > Hello
