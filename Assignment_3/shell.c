@@ -1,5 +1,6 @@
 #define _GNU_SOURCE
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -41,12 +42,51 @@ void Parser(char *buf,char *cmd, char **cmdargv)
    }
 }
 
+typedef struct{
+	char * varName;
+	char * varValue;
+}localVar;
+
+int findAndAddLocalVariable(char* buf,localVar ** localVariables, int *localVarNum){
+   char * varName;
+   char * varValue;
+   int startlocalVarNum = *localVarNum;
+   int i;
+   bool newVariable=true;
+   //store the first variable
+   varName = strtok(buf, "=");
+   varValue = strtok(NULL, "=");
+   if((varName != NULL) && (varValue != NULL)){
+	   //search the existing variable list
+	   for (i=0;i<startlocalVarNum;i++){
+		   //if the variable name already exists then update its value
+		   if(strcmp((*localVariables)[i].varName,varName)==0){
+			   free((*localVariables)[i].varValue);
+			   (*localVariables)[i].varValue=malloc(strlen(varValue));
+			   strcpy((*localVariables)[i].varValue,varValue);
+			   newVariable=false;
+		   }
+	   }
+	   //add a new variable
+	   if(newVariable){
+		   (*localVariables) = (localVar *) realloc((*localVariables),(sizeof(localVar)*(++(*localVarNum))));
+		   (*localVariables)[(*localVarNum)-1].varName=malloc(strlen(varName));
+		   strcpy((*localVariables)[(*localVarNum)-1].varName,varName);
+		   (*localVariables)[(*localVarNum)-1].varValue=malloc(strlen(varValue));
+		   strcpy((*localVariables)[(*localVarNum)-1].varValue,varValue);
+	   }
+   }
+   return ((*localVarNum)-startlocalVarNum);
+}
+
 int main(int argc, char *argv[])
 {
 	char buf[100]="";
 	char cmd[100]="";
 	char *cmdargv[100] = { NULL };
-	int status;
+	localVar * localVariables = NULL;
+	int localVarNum=0;
+	int status,i;
 
 	while (1){
 		//print the shell header and get the input
@@ -61,7 +101,15 @@ int main(int argc, char *argv[])
 			if (strcmp(buf,"exit")==0){
 				break;
 			}
-			//else if(){}
+			else if(findAndAddLocalVariable(buf,&localVariables,&localVarNum)){
+				//do nothing the variable has been stored
+				//printf("%d\n",localVarNum);
+			}
+			else if(strcmp(buf,"set")==0){
+				//list all the local variables
+			   for (i=0;i<localVarNum;i++)
+				   printf("localVariable[%d]: %s = %s\n",i,localVariables[i].varName,localVariables[i].varValue);
+			}
 			//if it is not a build in command then fork
 			else{
 				int ret_pid = fork();
