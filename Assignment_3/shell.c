@@ -47,7 +47,7 @@ typedef struct{
 	char * varValue;
 }localVar;
 
-int findAndAddLocalVariable(char* buf,localVar ** localVariables, int *localVarNum){
+bool findAndAddLocalVariable(char* buf,localVar ** localVariables, int *localVarNum){
    char * varName;
    char * varValue;
    int startlocalVarNum = *localVarNum;
@@ -76,7 +76,35 @@ int findAndAddLocalVariable(char* buf,localVar ** localVariables, int *localVarN
 		   strcpy((*localVariables)[(*localVarNum)-1].varValue,varValue);
 	   }
    }
-   return ((*localVarNum)-startlocalVarNum);
+   return ((varName != NULL) && (varValue != NULL));
+}
+
+void listLocalVariables(localVar * localVariables, int localVarNum){
+	int i;
+	//list all the local variables
+   for (i=0;i<localVarNum;i++)
+	   printf("localVariable[%d]: %s = %s\n",i,localVariables[i].varName,localVariables[i].varValue);
+}
+
+void exportLocalVariables(char **cmdargv,localVar * localVariables, int localVarNum){
+   int i,j;
+   bool varFound=false;
+   for (j=1;cmdargv[j]!=NULL;j++){
+	   //search for the exported variable
+	   for (i=0;i<localVarNum;i++){
+		   if(strcmp(localVariables[i].varName,cmdargv[j])==0){
+			  varFound=true;
+			  break;
+		   }
+	   }
+	   //export the variable if found or print an error
+	  if(varFound==true){
+		  setenv(localVariables[i].varName,localVariables[i].varValue,1);
+	   	  varFound=false;
+	  }
+	  else
+		  printf("undefined variable %s\n",cmdargv[j]);
+   }
 }
 
 int main(int argc, char *argv[])
@@ -86,7 +114,7 @@ int main(int argc, char *argv[])
 	char *cmdargv[100] = { NULL };
 	localVar * localVariables = NULL;
 	int localVarNum=0;
-	int status,i;
+	int status;
 
 	while (1){
 		//print the shell header and get the input
@@ -103,12 +131,13 @@ int main(int argc, char *argv[])
 			}
 			else if(findAndAddLocalVariable(buf,&localVariables,&localVarNum)){
 				//do nothing the variable has been stored
-				//printf("%d\n",localVarNum);
+				continue;
 			}
 			else if(strcmp(buf,"set")==0){
-				//list all the local variables
-			   for (i=0;i<localVarNum;i++)
-				   printf("localVariable[%d]: %s = %s\n",i,localVariables[i].varName,localVariables[i].varValue);
+				listLocalVariables(localVariables,localVarNum);
+			}
+			else if(strcmp(cmd,"export")==0){
+				exportLocalVariables(cmdargv,localVariables,localVarNum);
 			}
 			//if it is not a build in command then fork
 			else{
